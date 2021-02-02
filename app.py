@@ -65,6 +65,8 @@ def tobs():
     filter(Measurements.date >= '2016-08-18').\
     order_by(Measurements.date.desc()).all()
 
+    session.close()
+
     rows = [{"Date": result[0], "Temperature": result[1]} for result in temp_results]
 
     return jsonify(rows)
@@ -75,6 +77,9 @@ def start(date):
 
     start_results = session.query(func.min(Measurements.tobs), func.max(Measurements.tobs), func.avg(Measurements.tobs)).\
         filter(Measurements.date >= date).all()
+
+    session.close()
+
     return jsonify(start_results)
 
 @app.route("/api/v1.0/<start>/<end>")
@@ -84,6 +89,9 @@ def start_end(start, end):
     start_end_results = session.query(func.min(Measurements.tobs), func.max(Measurements.tobs), func.avg(Measurements.tobs)).\
         filter(Measurements.date >= start).\
         filter(Measurements.date <= end).all()
+
+    session.close()
+    
     return jsonify(start_end_results)
 
 if __name__ == '__main__':
